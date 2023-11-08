@@ -39,7 +39,7 @@ const ItemSelected = (props) => {
                 </div>
                   <select className="custom-select" id="inputGroupSelect01" onChange={(event) => setName(event.target.value)}>
                         <option defaultValue>Choose...</option>
-                        <option value="Shirt" name="Shirt"> Shirt</option>
+                        <option value="Shirt" name="Shirt">Shirt</option>
                 <option value="Dress" name="Dress">Dress</option>
                 <option value="Jeans" name="Jeans">Jeans</option>
                 <option value="Dinner set" name="Dinner set">Dinner set</option>

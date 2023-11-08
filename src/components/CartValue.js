@@ -5,11 +5,11 @@ const CartValue = () => {
     const { expenses, Location } = useContext(AppContext);
     const totalExpenses = expenses.reduce((total, item) => {
         return (total += (item.unitprice * item.quantity));
-    }, 0);
+    }, 2000);
 
     return (
         <div className='alert alert-primary'>
-            <span>Cart Value: {Location}{totalExpenses}</span>
+            <span>Budget: {Location}{totalExpenses}</span>
         </div>
     );
 };
