@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+/*import React, { useContext } from 'react';
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { AppContext } from '../context/AppContext';
-import { InputNumber } from 'antd';
+import { InputNumber, Button, message } from 'antd';
 import 'antd/dist/reset.css';
 
 const CartValue = () => {
@@ -32,7 +32,7 @@ const CartValue = () => {
     <Formik
       initialValues={{ numberField: totalExpenses }}
       validationSchema={validationSchema}
-      // onSubmit={handleSubmit}
+      
     >
       {(formik) => (
         <div className='alert alert-primary' style={{ display: 'flex', alignItems: 'center' }}>
@@ -55,3 +55,74 @@ const CartValue = () => {
 };
 
 export default CartValue;
+*/
+
+
+import React, { useState } from 'react';
+import { InputNumber, message } from 'antd';
+import 'antd/dist/reset.css';
+
+const Budget = ({ budget, setBudget }) => {
+  const handleBudgetChange = (value) => {
+    if (value <= 20000) {
+      setBudget(value);
+    }
+  };
+
+  return (
+    <div>
+      <label>Budget:</label>
+      <InputNumber
+        min={0}
+        max={20000}
+        value={budget}
+        onChange={handleBudgetChange}
+        style={{ marginRight: '10px' }}
+      />
+    </div>
+  );
+};
+
+const Balance = ({ budget, expense }) => {
+  const remainingBalance = budget - expense;
+
+  return (
+    <div>
+      <h3>Balance: ${remainingBalance}</h3>
+    </div>
+  );
+};
+
+const Expense = ({ expense, setExpense, remainingBalance }) => {
+  const handleExpenseChange = (value) => {
+    if (value <= remainingBalance) {
+      setExpense(value);
+    } else {
+      message.error("The value can't exceed remaining balance");
+    }
+  };
+
+  return (
+    <div>
+      <label>Expense:</label>
+      <InputNumber min={0} value={expense} onChange={handleExpenseChange} />
+    </div>
+  );
+};
+
+const App = () => {
+  const [budget, setBudget] = useState(1000); // Initial budget
+  const [expense, setExpense] = useState(0); // Initial expense
+
+  const totalExpenses = expense;
+
+  return (
+    <div>
+      <Budget budget={budget} setBudget={setBudget} />
+      <Balance budget={budget} expense={expense} />
+      <Expense expense={expense} setExpense={setExpense} remainingBalance={budget - totalExpenses} />
+    </div>
+  );
+};
+
+export default App;
