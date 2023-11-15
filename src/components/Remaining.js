@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
+import { InputNumber, message } from 'antd';
 import { AppContext } from '../context/AppContext';
 
+/*
 const Remaining = () => {
     const { expenses, Location } = useContext(AppContext);
     const totalExpenses = expenses.reduce((total, item) => {
@@ -14,4 +16,20 @@ const Remaining = () => {
     );
 };
 
-export default Remaining;
+*/
+
+
+const Balance = ({ budget, totalExpenses }) => {
+    const { expense, Location } = useContext(AppContext);
+    const remainingBalance = totalExpenses - expense;
+  
+    return (
+        <div className='alert alert-primary'>
+        <span>Remaining: {Location}{remainingBalance}</span>
+    </div>
+    );
+  };
+
+
+
+export default Balance;

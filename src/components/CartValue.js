@@ -1,4 +1,5 @@
-/*import React, { useContext } from 'react';
+/*
+import React, { useContext } from 'react';
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { AppContext } from '../context/AppContext';
@@ -58,11 +59,16 @@ export default CartValue;
 */
 
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { Formik, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { AppContext } from '../context/AppContext';
 import { InputNumber, message } from 'antd';
 import 'antd/dist/reset.css';
 
-const Budget = ({ budget, setBudget }) => {
+
+const { expenses, Location } =(AppContext);
+const CartValue = ({ budget, setBudget }) => {
   const handleBudgetChange = (value) => {
     if (value <= 20000) {
       setBudget(value);
@@ -70,14 +76,14 @@ const Budget = ({ budget, setBudget }) => {
   };
 
   return (
-    <div>
-      <label>Budget:</label>
+    <div className='alert alert-secondary'>
+      <label>Budget: {Location}</label>
       <InputNumber
         min={0}
         max={20000}
         value={budget}
         onChange={handleBudgetChange}
-        style={{ marginRight: '10px' }}
+        style={{ marginRight: '0px' }}
       />
     </div>
   );
@@ -93,7 +99,8 @@ const Balance = ({ budget, expense }) => {
   );
 };
 
-const Expense = ({ expense, setExpense, remainingBalance }) => {
+const Expense = ({ setExpense, remainingBalance }) => {
+    const { expense, Location } = useContext(AppContext);
   const handleExpenseChange = (value) => {
     if (value <= remainingBalance) {
       setExpense(value);
@@ -104,14 +111,14 @@ const Expense = ({ expense, setExpense, remainingBalance }) => {
 
   return (
     <div>
-      <label>Expense:</label>
+      <label>Expense:{Location}</label>
       <InputNumber min={0} value={expense} onChange={handleExpenseChange} />
     </div>
   );
 };
 
 const App = () => {
-  const [budget, setBudget] = useState(1000); // Initial budget
+  const [Budget, budget, setBudget] = useState(1000); // Initial budget
   const [expense, setExpense] = useState(0); // Initial expense
 
   const totalExpenses = expense;
@@ -125,4 +132,6 @@ const App = () => {
   );
 };
 
-export default App;
+
+export default CartValue;
+
