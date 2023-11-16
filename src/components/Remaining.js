@@ -24,8 +24,8 @@ const Balance = ({ budget, totalExpenses }) => {
     const remainingBalance = totalExpenses - expense;
   
     return (
-        <div className='alert alert-primary'>
-        <span>Remaining: {Location}{remainingBalance}</span>
+        <div className='alert alert-success'>
+        <span>Remaining: {Location} </span>
     </div>
     );
   };

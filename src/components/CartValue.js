@@ -1,13 +1,14 @@
-/*
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { AppContext } from '../context/AppContext';
-import { InputNumber, Button, message } from 'antd';
+import { InputNumber, message } from 'antd';
 import 'antd/dist/reset.css';
 
 const CartValue = () => {
   const { expenses, Location } = useContext(AppContext);
+  const [errorVisible, setErrorVisible] = useState(false);
+
   const validationSchema = Yup.object().shape({
     numberField: Yup.number()
       .typeError('Please enter a valid number')
@@ -27,13 +28,22 @@ const CartValue = () => {
 
   const totalExpenses = expenses.reduce((total, item) => {
     return (total += item.unitprice * item.quantity);
-  }, 2000);
+  }, 19999);
+
+  const handleIncrement = (formik) => {
+    const currentValue = formik.values.numberField + 10;
+    if (currentValue > 20000) {
+      setErrorVisible(true);
+      message.error('Budget exceeded', 0); // Duration set to 0 to keep the message until user closes it
+    } else {
+      formik.setFieldValue('numberField', currentValue);
+    }
+  };
 
   return (
     <Formik
       initialValues={{ numberField: totalExpenses }}
       validationSchema={validationSchema}
-      
     >
       {(formik) => (
         <div className='alert alert-primary' style={{ display: 'flex', alignItems: 'center' }}>
@@ -41,14 +51,29 @@ const CartValue = () => {
           <InputNumber
             name='numberField'
             value={formik.values.numberField}
-            onChange={(value) => formik.setFieldValue('numberField', value)}
-            formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            onChange={(value) => {
+              if (value <= 20000) {
+                formik.setFieldValue('numberField', value);
+              } else {
+                setErrorVisible(true);
+                message.error('Budget reached the upper limit', 0); // Duration set to 0 to keep the message until user closes it
+              }
+            }}
+            formatter={(value) => ` ${value}`}
             parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
             min={0}
             max={20000}
             step={10}
+            disabled={formik.values.numberField === 20000} // Disable increment button when value is 20000
+            onStep={() => handleIncrement(formik)}
           />
           <ErrorMessage name='numberField' component='div' />
+          {errorVisible && (
+            <div onClick={() => setErrorVisible(false)} style={{ cursor: 'pointer' }}>
+              {/* This div just serves as a backdrop for the message */}
+              <div style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', zIndex: '999' }} />
+            </div>
+          )}
         </div>
       )}
     </Formik>
@@ -56,82 +81,3 @@ const CartValue = () => {
 };
 
 export default CartValue;
-*/
-
-
-import React, { useState, useContext } from 'react';
-import { Formik, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { AppContext } from '../context/AppContext';
-import { InputNumber, message } from 'antd';
-import 'antd/dist/reset.css';
-
-
-const { expenses, Location } =(AppContext);
-const CartValue = ({ budget, setBudget }) => {
-  const handleBudgetChange = (value) => {
-    if (value <= 20000) {
-      setBudget(value);
-    }
-  };
-
-  return (
-    <div className='alert alert-secondary'>
-      <label>Budget: {Location}</label>
-      <InputNumber
-        min={0}
-        max={20000}
-        value={budget}
-        onChange={handleBudgetChange}
-        style={{ marginRight: '0px' }}
-      />
-    </div>
-  );
-};
-
-const Balance = ({ budget, expense }) => {
-  const remainingBalance = budget - expense;
-
-  return (
-    <div>
-      <h3>Balance: ${remainingBalance}</h3>
-    </div>
-  );
-};
-
-const Expense = ({ setExpense, remainingBalance }) => {
-    const { expense, Location } = useContext(AppContext);
-  const handleExpenseChange = (value) => {
-    if (value <= remainingBalance) {
-      setExpense(value);
-    } else {
-      message.error("The value can't exceed remaining balance");
-    }
-  };
-
-  return (
-    <div>
-      <label>Expense:{Location}</label>
-      <InputNumber min={0} value={expense} onChange={handleExpenseChange} />
-    </div>
-  );
-};
-
-const App = () => {
-  const [Budget, budget, setBudget] = useState(1000); // Initial budget
-  const [expense, setExpense] = useState(0); // Initial expense
-
-  const totalExpenses = expense;
-
-  return (
-    <div>
-      <Budget budget={budget} setBudget={setBudget} />
-      <Balance budget={budget} expense={expense} />
-      <Expense expense={expense} setExpense={setExpense} remainingBalance={budget - totalExpenses} />
-    </div>
-  );
-};
-
-
-export default CartValue;
-
